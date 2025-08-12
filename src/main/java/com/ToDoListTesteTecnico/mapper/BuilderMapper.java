@@ -22,7 +22,7 @@ public class BuilderMapper {
                 value = sourceField.get(source);
             } catch (IllegalAccessException e) {
 
-                throw new FieldNotFoundException(FIELD_NOT_FOUND, sourceField.getName());
+                throw new FieldNotFoundException(sourceField.getName());
             }
 
             if (value != null && !sourceField.getName().equals("serialVersionUID")) {
