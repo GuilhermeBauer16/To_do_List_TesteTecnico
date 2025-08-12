@@ -38,7 +38,7 @@ public class TaskService implements TaskServiceContract {
     public TaskVO createTask(TaskVO taskVO) {
 
         ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, TASK_NOT_FOUND_EXCEPTION_MESSAGE, TaskNotFoundException.class);
-        TaskEntity taskEntity = TaskFactory.createTask(taskVO.getTitle(), taskVO.getDescription(), taskVO.getDueDate(), taskVO.getStatus(), taskVO.getPriority());
+        TaskEntity taskEntity = TaskFactory.createTask(taskVO.getTitle(), taskVO.getDescription(), taskVO.getDueDate(), taskVO.getStatus(), taskVO.getPriority(), taskVO.getSubTasks());
         ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(taskEntity, TASK_NOT_FOUND_EXCEPTION_MESSAGE, FieldNotFoundException.class);
         repository.save(taskEntity);
         return BuilderMapper.parseObject(new TaskVO(), taskEntity);
@@ -56,12 +56,7 @@ public class TaskService implements TaskServiceContract {
     }
 
     @Override
-    public Page<TaskVO> findAllTasks(Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Page<TaskVO> findAllTasksByStatus(Status status,Priority priority, LocalDateTime dueDate, Pageable pageable) {
+    public Page<TaskVO> findAllTasksByStatus(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable) {
 
         Specification<TaskEntity> taskEntitySpecification = TaskSpecificatios.withFilters(status, priority, dueDate);
         Page<TaskEntity> tasksByStatus = repository.findAll(taskEntitySpecification, pageable);
@@ -69,15 +64,6 @@ public class TaskService implements TaskServiceContract {
         return new PageImpl<>(taskVOS, pageable, tasksByStatus.getTotalElements());
     }
 
-    @Override
-    public Page<TaskVO> findAllTasksByPriority(Priority priority, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public Page<TaskVO> findAllTasksByDueDate(LocalDateTime dueDate, Pageable pageable) {
-        return null;
-    }
 
     @Override
     public void deleteTaskById(String id) {

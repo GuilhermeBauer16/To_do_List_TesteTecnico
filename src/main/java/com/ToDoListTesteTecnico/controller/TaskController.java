@@ -55,30 +55,17 @@ public class TaskController implements TaskControllerContract {
     }
 
     @Override
-    public Page<TaskVO> findAllTasks(Pageable pageable) {
-        return null;
-    }
-
-    @Override
     @GetMapping("/status")
-    public ResponseEntity<Page<TaskVO>> findAllTasksByStatus(@RequestParam(required = false) Status status,
-                                                             @RequestParam(required = false) Priority priority,
-                                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dueDate,
-                                                             Pageable pageable) {
+    public ResponseEntity<Page<TaskVO>> findAllTasksByStatus(
+            @RequestParam(required = false) Status status,
+            @RequestParam(required = false) Priority priority,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dueDate,
+            Pageable pageable) {
 
         Page<TaskVO> allTasksByStatus = taskService.findAllTasksByStatus(status, priority, dueDate, pageable);
         return ResponseEntity.ok(allTasksByStatus);
     }
 
-    @Override
-    public ResponseEntity<Page<TaskVO>> findAllTasksByPriority(Priority priority, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<Page<TaskVO>> findAllTasksByDueDate(LocalDateTime dueDate, Pageable pageable) {
-        return null;
-    }
 
     @Override
     public void deleteTaskById(String id) {

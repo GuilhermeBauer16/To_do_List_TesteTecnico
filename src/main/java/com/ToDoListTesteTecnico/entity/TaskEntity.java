@@ -7,10 +7,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tasks")
@@ -28,16 +34,26 @@ public class TaskEntity {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "task_subtasks",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "subtask_id")
+    )
+    private List<TaskEntity> subTasks = new ArrayList<>();
+
     public TaskEntity() {
     }
 
-    public TaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority) {
+
+    public TaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<TaskEntity> subTasks) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
         this.priority = priority;
+        this.subTasks = subTasks;
     }
 
     public String getId() {
@@ -86,5 +102,13 @@ public class TaskEntity {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
+    }
+
+    public List<TaskEntity> getSubTasks() {
+        return subTasks;
+    }
+
+    public void setSubTasks(List<TaskEntity> subTasks) {
+        this.subTasks = subTasks;
     }
 }

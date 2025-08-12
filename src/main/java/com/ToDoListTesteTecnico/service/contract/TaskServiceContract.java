@@ -16,13 +16,8 @@ public interface TaskServiceContract {
 
     TaskVO getTaskById(String id);
 
-    Page<TaskVO> findAllTasks(Pageable pageable);
-
     Page<TaskVO> findAllTasksByStatus(Status status,Priority priority, LocalDateTime dueDate, Pageable pageable);
 
-    Page<TaskVO> findAllTasksByPriority(Priority priority, Pageable pageable);
-
-    Page<TaskVO> findAllTasksByDueDate(LocalDateTime dueDate, Pageable pageable);
 
     void deleteTaskById(String id);
 }
