@@ -1,8 +1,9 @@
 package com.ToDoListTesteTecnico.service.contract;
 
+import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
-import com.ToDoListTesteTecnico.request.SubTaskUpdateRequest;
+import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
 
 public interface SubTaskServiceContract {
 
@@ -10,5 +11,9 @@ public interface SubTaskServiceContract {
 
     TaskVO addSubTaskToTask(String taskId, SubtaskVO subtaskVO);
 
-    SubtaskVO updateSubTaskStatus(SubTaskUpdateRequest subTaskUpdateRequest);
+    SubtaskVO updateSubTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
+
+    SubtaskVO findSubTaskById(String id);
+
+    void deleteSubTask(String id);
 }

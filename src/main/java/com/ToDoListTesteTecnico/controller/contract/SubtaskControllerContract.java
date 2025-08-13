@@ -1,13 +1,15 @@
 package com.ToDoListTesteTecnico.controller.contract;
 
 import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
-import com.ToDoListTesteTecnico.entity.values.TaskVO;
-import com.ToDoListTesteTecnico.request.SubTaskUpdateRequest;
+import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface SubtaskControllerContract {
 
-    ResponseEntity<TaskVO> addSubTaskToTask(String taskId, SubtaskVO subtaskVO);
 
-    ResponseEntity<TaskVO> updateSubTask(SubTaskUpdateRequest subTaskUpdateRequest);
+    ResponseEntity<SubtaskVO> updateSubTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
+
+    ResponseEntity<SubtaskVO> findSubTaskById(String id);
+
+    ResponseEntity<Void> deleteSubTask(String id);
 }

@@ -1,5 +1,6 @@
 package com.ToDoListTesteTecnico.service;
 
+import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.SubtaskEntity;
 import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
@@ -8,7 +9,7 @@ import com.ToDoListTesteTecnico.exception.TaskNotFoundException;
 import com.ToDoListTesteTecnico.factory.SubtaskFactory;
 import com.ToDoListTesteTecnico.mapper.BuilderMapper;
 import com.ToDoListTesteTecnico.repository.SubtaskRepository;
-import com.ToDoListTesteTecnico.request.SubTaskUpdateRequest;
+import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
 import com.ToDoListTesteTecnico.service.contract.SubTaskServiceContract;
 import com.ToDoListTesteTecnico.utils.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class SubtaskService implements SubTaskServiceContract {
 
         ValidatorUtils.checkObjectIsNullOrThrowException(subtaskVO, TASK_NOT_FOUND_EXCEPTION_MESSAGE, TaskNotFoundException.class);
 
+        if(subtaskVO.getStatus() == Status.COMPLETED){
+            throw new RuntimeException("Is not possible create a task with completed status");
+        }
         SubtaskEntity subtaskEntity = SubtaskFactory.createSubtask(subtaskVO.getTitle(), subtaskVO.getDescription(),
                 subtaskVO.getDueDate(), subtaskVO.getStatus(), subtaskVO.getPriority());
 
@@ -50,20 +54,43 @@ public class SubtaskService implements SubTaskServiceContract {
     public TaskVO addSubTaskToTask(String taskId, SubtaskVO subtaskVO) {
 
 
-        TaskVO taskVO = taskService.getTaskById(taskId);
+        TaskVO taskVO = taskService.findTaskById(taskId);
 
         SubtaskVO subtask = createSubtask(subtaskVO);
         SubtaskEntity subtaskEntity = BuilderMapper.parseObject(new SubtaskEntity(), subtask);
         verifyIfNotHaveDuplicatedSubtask(subtask.getId(), taskVO);
         taskVO.getSubTasks().add(subtaskEntity);
-        TaskVO updateTask = taskService.updateTask(taskVO);
 
-        return updateTask;
+        return taskService.updateTask(taskVO);
     }
 
     @Override
-    public SubtaskVO updateSubTaskStatus(SubTaskUpdateRequest subTaskUpdateRequest) {
-        return null;
+    public SubtaskVO updateSubTaskStatus(String id, UpdateStatusRequest updateStatusRequest) {
+
+        SubtaskVO subtaskVO = findSubTaskById(id);
+        subtaskVO.setStatus(updateStatusRequest.getStatus());
+        SubtaskEntity subtaskEntity = ValidatorUtils.updateFieldIfNotNull(new SubtaskEntity(),
+                subtaskVO, TASK_NOT_FOUND_EXCEPTION_MESSAGE, FieldNotFoundException.class);
+
+        repository.save(subtaskEntity);
+        return BuilderMapper.parseObject(new SubtaskVO(), subtaskEntity);
+    }
+
+
+    @Override
+    public SubtaskVO findSubTaskById(String id) {
+
+        SubtaskEntity subtaskEntity = repository.findById(id).orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
+        return BuilderMapper.parseObject(new SubtaskVO(), subtaskEntity);
+    }
+
+    @Override
+    public void deleteSubTask(String id) {
+
+        SubtaskVO subTaskById = findSubTaskById(id);
+        SubtaskEntity subtaskEntity = BuilderMapper.parseObject(new SubtaskEntity(), subTaskById);
+        repository.delete(subtaskEntity);
+
     }
 
 

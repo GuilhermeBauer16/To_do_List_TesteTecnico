@@ -6,6 +6,7 @@ import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.controller.contract.TaskControllerContract;
 import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
+import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
 import com.ToDoListTesteTecnico.service.SubtaskService;
 import com.ToDoListTesteTecnico.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,35 +49,40 @@ public class TaskController implements TaskControllerContract {
     }
 
     @Override
-    public ResponseEntity<TaskVO> updateTask(TaskVO task) {
-        return null;
+    @PatchMapping("/updateStatus/{id}")
+    public ResponseEntity<TaskVO> updateTaskStatus(@PathVariable("id") String id, @RequestBody UpdateStatusRequest updateStatusRequest) {
+        TaskVO taskVO = taskService.updateTaskStatus(id, updateStatusRequest);
+        return ResponseEntity.ok(taskVO);
     }
 
-    @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<TaskVO> getTaskById(@PathVariable("id") String id) {
 
-        TaskVO taskById = taskService.getTaskById(id);
+    @Override
+    @GetMapping("/findTask/{id}")
+    public ResponseEntity<TaskVO> findTaskById(@PathVariable("id") String id) {
+
+        TaskVO taskById = taskService.findTaskById(id);
         return ResponseEntity.ok(taskById);
     }
 
     @Override
-    @GetMapping("/status")
-    public ResponseEntity<Page<TaskVO>> findAllTasksByStatus(
+    @GetMapping("/findAll")
+    public ResponseEntity<Page<TaskVO>> findAllTasks(
             @RequestParam(required = false) Status status,
             @RequestParam(required = false) Priority priority,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dueDate,
             Pageable pageable) {
 
-        Page<TaskVO> allTasksByStatus = taskService.findAllTasksByStatus(status, priority, dueDate, pageable);
+        Page<TaskVO> allTasksByStatus = taskService.findAllTasks(status, priority, dueDate, pageable);
         return ResponseEntity.ok(allTasksByStatus);
     }
 
-
     @Override
-    public void deleteTaskById(String id) {
-
+    @DeleteMapping("/deleteTask/{id}")
+    public ResponseEntity<Void> deleteTaskById(@PathVariable("id") String id) {
+        taskService.deleteTaskById(id);
+        return ResponseEntity.noContent().build();
     }
+
 
     @Override
     @PostMapping("/{taskId}/subtask")

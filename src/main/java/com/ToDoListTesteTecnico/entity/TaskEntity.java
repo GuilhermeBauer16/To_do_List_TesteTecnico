@@ -3,6 +3,7 @@ package com.ToDoListTesteTecnico.entity;
 
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,7 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
@@ -34,7 +35,8 @@ public class TaskEntity {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL)
     @JoinTable(
             name = "task_subtasks",
             joinColumns = @JoinColumn(name = "task_id"),
