@@ -1,5 +1,6 @@
 package com.ToDoListTesteTecnico.Enum;
 
+import com.ToDoListTesteTecnico.exception.utils.UnknownPriorityValueException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -20,6 +21,7 @@ public enum Priority {
         this.value = value;
     }
 
+
     @JsonValue
     public String getValue() {
         return value;
@@ -33,6 +35,6 @@ public enum Priority {
                 return p;
             }
         }
-        throw new IllegalArgumentException("Invalid Status: " + value);
+        throw new UnknownPriorityValueException(value);
     }
 }

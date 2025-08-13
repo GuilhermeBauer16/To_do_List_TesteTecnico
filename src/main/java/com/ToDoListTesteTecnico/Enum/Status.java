@@ -1,5 +1,6 @@
 package com.ToDoListTesteTecnico.Enum;
 
+import com.ToDoListTesteTecnico.exception.utils.UnknownStatusValueException;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
@@ -28,6 +29,6 @@ public enum Status {
                 return s;
             }
         }
-        throw new IllegalArgumentException("Invalid Status: " + value);
+        throw new UnknownStatusValueException(value);
     }
 }
