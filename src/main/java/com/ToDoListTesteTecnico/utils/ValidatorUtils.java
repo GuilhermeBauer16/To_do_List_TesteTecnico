@@ -1,7 +1,7 @@
 package com.ToDoListTesteTecnico.utils;
 
 
-import com.ToDoListTesteTecnico.exception.ValidationUtilsException;
+import com.ToDoListTesteTecnico.exception.utils.ValidationUtilsException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

@@ -5,8 +5,11 @@ import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.SubtaskEntity;
 import com.ToDoListTesteTecnico.entity.TaskEntity;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
-import com.ToDoListTesteTecnico.exception.FieldNotFoundException;
-import com.ToDoListTesteTecnico.exception.TaskNotFoundException;
+import com.ToDoListTesteTecnico.exception.utils.FieldNotFoundException;
+import com.ToDoListTesteTecnico.exception.task.InvalidTaskException;
+import com.ToDoListTesteTecnico.exception.task.InvalidTaskStatusException;
+import com.ToDoListTesteTecnico.exception.subtask.SubTaskNotCompletedException;
+import com.ToDoListTesteTecnico.exception.task.TaskNotFoundException;
 import com.ToDoListTesteTecnico.factory.TaskFactory;
 import com.ToDoListTesteTecnico.mapper.BuilderMapper;
 import com.ToDoListTesteTecnico.repository.TaskRepository;
@@ -28,6 +31,10 @@ import java.util.List;
 public class TaskService implements TaskServiceContract {
 
     private static final String TASK_NOT_FOUND_EXCEPTION_MESSAGE = "This Task was not found";
+    private static final String INVALID_TASK_EXCEPTION_MESSAGE = "This Task is invalid, please verify the field and try again";
+    private static final String SUBTASK_NOT_COMPLETED_EXCEPTION_MESSAGE = "Is not possible updated a task with subtasks not completed yet";
+    private static final String INVALID_TASK_STATUS_EXCEPTION_MESSAGE = "Is not possible create a task with completed status";
+
 
     private final TaskRepository repository;
 
@@ -39,13 +46,13 @@ public class TaskService implements TaskServiceContract {
     @Override
     public TaskVO createTask(TaskVO taskVO) {
 
-        ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, TASK_NOT_FOUND_EXCEPTION_MESSAGE, TaskNotFoundException.class);
+        ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, INVALID_TASK_EXCEPTION_MESSAGE, InvalidTaskException.class);
 
-        if(taskVO.getStatus() == Status.COMPLETED){
-            throw new RuntimeException("Is not possible create a task with completed status");
+        if (taskVO.getStatus() == Status.COMPLETED) {
+            throw new InvalidTaskStatusException(INVALID_TASK_STATUS_EXCEPTION_MESSAGE);
         }
         TaskEntity taskEntity = TaskFactory.createTask(taskVO.getTitle(), taskVO.getDescription(), taskVO.getDueDate(), taskVO.getStatus(), taskVO.getPriority(), taskVO.getSubTasks());
-        ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(taskEntity, TASK_NOT_FOUND_EXCEPTION_MESSAGE, FieldNotFoundException.class);
+        ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(taskEntity, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
         repository.save(taskEntity);
         return BuilderMapper.parseObject(new TaskVO(), taskEntity);
     }
@@ -53,10 +60,10 @@ public class TaskService implements TaskServiceContract {
     @Override
     public TaskVO updateTask(TaskVO taskVO) {
 
-        ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, TASK_NOT_FOUND_EXCEPTION_MESSAGE, TaskNotFoundException.class);
+        ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, INVALID_TASK_EXCEPTION_MESSAGE, InvalidTaskException.class);
         TaskVO taskById = findTaskById(taskVO.getId());
         TaskEntity taskEntity = BuilderMapper.parseObject(new TaskEntity(), taskById);
-        TaskEntity updatedTask = ValidatorUtils.updateFieldIfNotNull(taskEntity, taskVO, TASK_NOT_FOUND_EXCEPTION_MESSAGE, FieldNotFoundException.class);
+        TaskEntity updatedTask = ValidatorUtils.updateFieldIfNotNull(taskEntity, taskVO, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
         repository.save(updatedTask);
         return BuilderMapper.parseObject(new TaskVO(), updatedTask);
     }
@@ -71,7 +78,7 @@ public class TaskService implements TaskServiceContract {
         }
         taskVO.setStatus(updateStatusRequest.getStatus());
         TaskEntity taskEntity = ValidatorUtils.updateFieldIfNotNull(new TaskEntity(),
-                taskVO, TASK_NOT_FOUND_EXCEPTION_MESSAGE, FieldNotFoundException.class);
+                taskVO, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
 
         repository.save(taskEntity);
         return BuilderMapper.parseObject(new TaskVO(), taskEntity);
@@ -80,6 +87,7 @@ public class TaskService implements TaskServiceContract {
 
     @Override
     public TaskVO findTaskById(String id) {
+
         TaskEntity taskEntity = repository.findById(id).orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
         return BuilderMapper.parseObject(new TaskVO(), taskEntity);
     }
@@ -109,7 +117,7 @@ public class TaskService implements TaskServiceContract {
         for (int i = 0; i < subtaskEntities.size(); i++) {
             if (subtaskEntities.get(i).getStatus() != Status.COMPLETED) {
 
-                throw new RuntimeException("Is not possible updated a task with subtasks not completed");
+                throw new SubTaskNotCompletedException(SUBTASK_NOT_COMPLETED_EXCEPTION_MESSAGE);
 
             }
 

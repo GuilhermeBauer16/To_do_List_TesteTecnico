@@ -1,4 +1,4 @@
-package com.ToDoListTesteTecnico.exception;
+package com.ToDoListTesteTecnico.exception.task;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

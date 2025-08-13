@@ -1,4 +1,4 @@
-package com.ToDoListTesteTecnico.exception;
+package com.ToDoListTesteTecnico.exception.utils;
 
 import com.ToDoListTesteTecnico.Enum.ExceptionDetails;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.ToDoListTesteTecnico.mapper;
 
-import com.ToDoListTesteTecnico.exception.FieldNotFoundException;
+import com.ToDoListTesteTecnico.exception.utils.FieldNotFoundException;
 
 import java.lang.reflect.Field;
 
