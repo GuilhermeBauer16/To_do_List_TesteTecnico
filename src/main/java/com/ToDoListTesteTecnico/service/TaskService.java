@@ -7,15 +7,16 @@ import com.ToDoListTesteTecnico.entity.TaskEntity;
 import com.ToDoListTesteTecnico.entity.UserEntity;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
 import com.ToDoListTesteTecnico.entity.values.UserVO;
-import com.ToDoListTesteTecnico.exception.utils.FieldNotFoundException;
+import com.ToDoListTesteTecnico.exception.subtask.SubTaskNotCompletedException;
 import com.ToDoListTesteTecnico.exception.task.InvalidTaskException;
 import com.ToDoListTesteTecnico.exception.task.InvalidTaskStatusException;
-import com.ToDoListTesteTecnico.exception.subtask.SubTaskNotCompletedException;
 import com.ToDoListTesteTecnico.exception.task.TaskNotFoundException;
+import com.ToDoListTesteTecnico.exception.utils.FieldNotFoundException;
 import com.ToDoListTesteTecnico.factory.TaskFactory;
 import com.ToDoListTesteTecnico.mapper.BuilderMapper;
 import com.ToDoListTesteTecnico.repository.TaskRepository;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
+import com.ToDoListTesteTecnico.response.TaskResponse;
 import com.ToDoListTesteTecnico.service.contract.TaskServiceContract;
 import com.ToDoListTesteTecnico.service.user.UserService;
 import com.ToDoListTesteTecnico.utils.TaskSpecificatios;
@@ -51,7 +52,7 @@ public class TaskService implements TaskServiceContract {
     }
 
     @Override
-    public TaskVO createTask(TaskVO taskVO) {
+    public TaskResponse createTask(TaskVO taskVO) {
 
         ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, INVALID_TASK_EXCEPTION_MESSAGE, InvalidTaskException.class);
         UserVO userByEmail = userService.findUserByEmail(retrieveUserEmail());
@@ -59,27 +60,28 @@ public class TaskService implements TaskServiceContract {
         if (taskVO.getStatus() == Status.COMPLETED) {
             throw new InvalidTaskStatusException(INVALID_TASK_STATUS_EXCEPTION_MESSAGE);
         }
-        TaskEntity taskEntity = TaskFactory.createTask(taskVO.getTitle(), taskVO.getDescription(), taskVO.getDueDate(), taskVO.getStatus(), taskVO.getPriority(), taskVO.getSubTasks(),userEntity);
+        TaskEntity taskEntity = TaskFactory.createTask(taskVO.getTitle(), taskVO.getDescription(), taskVO.getDueDate(), taskVO.getStatus(), taskVO.getPriority(), taskVO.getSubTasks(), userEntity);
         ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(taskEntity, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
         repository.save(taskEntity);
-        return BuilderMapper.parseObject(new TaskVO(), taskEntity);
+        return BuilderMapper.parseObject(new TaskResponse(), taskEntity);
     }
 
     @Override
-    public TaskVO updateTask(TaskVO taskVO) {
+    public TaskResponse updateTask(TaskVO taskVO) {
 
         ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, INVALID_TASK_EXCEPTION_MESSAGE, InvalidTaskException.class);
-        TaskVO taskById = findTaskById(taskVO.getId());
-        TaskEntity taskEntity = BuilderMapper.parseObject(new TaskEntity(), taskById);
+        TaskEntity taskEntity = repository.findByIdAndUserEmail(taskVO.getId(), retrieveUserEmail())
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
+
         TaskEntity updatedTask = ValidatorUtils.updateFieldIfNotNull(taskEntity, taskVO, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
         repository.save(updatedTask);
-        return BuilderMapper.parseObject(new TaskVO(), updatedTask);
+        return BuilderMapper.parseObject(new TaskResponse(), updatedTask);
     }
 
     @Override
-    public TaskVO updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest) {
+    public TaskResponse updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest) {
 
-        TaskVO taskVO = findTaskById(id);
+        TaskResponse taskVO = findTaskById(id);
 
         if (updateStatusRequest.getStatus() == Status.COMPLETED) {
             checkSubtaskStatusIsCompleted(taskVO.getSubTasks());
@@ -89,31 +91,32 @@ public class TaskService implements TaskServiceContract {
                 taskVO, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
 
         repository.save(taskEntity);
-        return BuilderMapper.parseObject(new TaskVO(), taskEntity);
+        return BuilderMapper.parseObject(new TaskResponse(), taskEntity);
 
     }
 
     @Override
-    public TaskVO findTaskById(String id) {
+    public TaskResponse findTaskById(String id) {
 
-        TaskEntity taskEntity = repository.findById(id).orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
-        return BuilderMapper.parseObject(new TaskVO(), taskEntity);
+        TaskEntity taskEntity = repository.findByIdAndUserEmail(id,retrieveUserEmail())
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
+        return BuilderMapper.parseObject(new TaskResponse(), taskEntity);
     }
 
     @Override
-    public Page<TaskVO> findAllTasks(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable) {
+    public Page<TaskResponse> findAllTasks(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable) {
 
         Specification<TaskEntity> taskEntitySpecification = TaskSpecificatios.withFilters(status, priority, dueDate);
         Page<TaskEntity> tasksByStatus = repository.findAll(taskEntitySpecification, pageable);
-        List<TaskVO> taskVOS = tasksByStatus.getContent().stream().map(taskEntity -> BuilderMapper.parseObject(new TaskVO(), taskEntity)).toList();
-        return new PageImpl<>(taskVOS, pageable, tasksByStatus.getTotalElements());
+        List<TaskResponse> taskResponses = tasksByStatus.getContent().stream().map(taskEntity -> BuilderMapper.parseObject(new TaskResponse(), taskEntity)).toList();
+        return new PageImpl<>(taskResponses, pageable, tasksByStatus.getTotalElements());
     }
 
 
     @Override
     public void deleteTaskById(String id) {
 
-        TaskVO taskById = findTaskById(id);
+        TaskResponse taskById = findTaskById(id);
         TaskEntity taskEntity = BuilderMapper.parseObject(new TaskEntity(), taskById);
 
         repository.delete(taskEntity);

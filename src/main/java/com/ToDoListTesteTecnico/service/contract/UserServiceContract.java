@@ -2,19 +2,36 @@ package com.ToDoListTesteTecnico.service.contract;
 
 
 import com.ToDoListTesteTecnico.entity.values.UserVO;
-import com.ToDoListTesteTecnico.request.UserUpdateRequest;
+import com.ToDoListTesteTecnico.response.UserResponse;
 
 /**
- * Service contract interface for user-related operations.
- * <p>
- * This interface defines methods for finding a user by email and updating a user's information. Implementations
- * of this interface should handle business logic related to user management, such as querying user data and
- * performing updates on the user profile.
- * </p>
+ * Service interface for managing user registration within the application.
+ *
+ * <p>This service provides methods to create user based on specific
+ * criteria.
  */
 
 public interface UserServiceContract {
 
+    /**
+     * Registers a new user in the system.
+     *
+     * <p>This method processes the user registration details provided in the {@link UserVO} object
+     * and creates a new user account. It returns a response containing information about the
+     * newly created user.
+     *
+     * @param userVO The {@link UserVO} object containing the user's registration details,
+     *               such as username, email, password, and any other relevant information.
+     * @return {@link UserRegistrationResponse} object with details of the newly created user,
+     * including a unique user ID and other registration-related information.
+     * @throws UserNotFoundException          if the {@link UserVO} object was empty or null .
+     * @throws FieldNotFound                  if there is an issue with the registration values, such as empty or null field.
+     * @throws EmailAllReadyRegisterException if the email passed is all ready register into the database preventing duplicated values.
+     * @see UserRegistrationResponse
+     * @see UserVO
+     */
+
+    UserResponse createUser(UserVO userVO);
 
     /**
      * Finds a user by their email address.
@@ -28,20 +45,4 @@ public interface UserServiceContract {
      * @throws UserNotFoundException if no user is found with the provided email address
      */
     UserVO findUserByEmail(String email);
-
-
-    /**
-     * Updates a user's information based on the provided update request.
-     * <p>
-     * This method updates the user's data using the fields from the {@link UserUpdateRequest}. If the user is
-     * not found, a {@link UserNotFoundException} is thrown. Fields that are not provided in the update request
-     * will not be modified. After updating, the method returns the updated user data as a {@link UserVO} object.
-     * </p>
-     *
-     * @param userUpdateRequest the request containing the user's email and new data to update
-     * @return the updated {@link UserVO} object containing the user's data after the update
-     * @throws UserNotFoundException if no user is found with the provided email address
-     * @throws FieldNotFound         if an invalid field is found in the update request
-     */
-    UserVO updateUser(UserUpdateRequest userUpdateRequest);
 }

@@ -2,9 +2,11 @@ package com.ToDoListTesteTecnico.controller;
 
 import com.ToDoListTesteTecnico.controller.contract.UserRegistrationControllerContract;
 import com.ToDoListTesteTecnico.entity.values.UserVO;
-import com.ToDoListTesteTecnico.service.user.UserRegistrationService;
+import com.ToDoListTesteTecnico.response.UserResponse;
+import com.ToDoListTesteTecnico.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,19 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserRegistrationController implements UserRegistrationControllerContract {
 
 
-    private final UserRegistrationService userRegistrationService;
+    private final UserService userRegistrationService;
 
     @Autowired
 
-    public UserRegistrationController(UserRegistrationService userRegistrationService) {
+    public UserRegistrationController(UserService userRegistrationService) {
         this.userRegistrationService = userRegistrationService;
     }
 
     @Override
-    @PostMapping
-    public ResponseEntity<UserVO> createUser(@RequestBody UserVO userVO) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserResponse> createUser(@RequestBody UserVO userVO) {
 
-        UserVO user = userRegistrationService.createUser(userVO);
+        UserResponse user = userRegistrationService.createUser(userVO);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 }

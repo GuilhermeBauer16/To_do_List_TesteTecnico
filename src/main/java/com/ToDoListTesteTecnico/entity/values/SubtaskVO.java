@@ -2,12 +2,9 @@ package com.ToDoListTesteTecnico.entity.values;
 
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
-import com.ToDoListTesteTecnico.entity.TaskEntity;
 import com.ToDoListTesteTecnico.entity.UserEntity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class SubtaskVO {
@@ -23,14 +20,14 @@ public class SubtaskVO {
     public SubtaskVO() {
     }
 
-    public SubtaskVO(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority) {
+    public SubtaskVO(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, UserEntity user) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
         this.priority = priority;
-
+        this.user = user;
     }
 
     public String getId() {
@@ -81,4 +78,11 @@ public class SubtaskVO {
         this.priority = priority;
     }
 
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
 }

@@ -27,6 +27,7 @@ public class LoginController implements LoginControllerContract {
     @Override
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
+
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         LoginResponse login = loginService.login(request);
         return ResponseEntity.ok(login);

@@ -5,6 +5,7 @@ import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
+import com.ToDoListTesteTecnico.response.TaskResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,15 +13,15 @@ import java.time.LocalDateTime;
 
 public interface TaskServiceContract {
 
-    TaskVO createTask(TaskVO taskVO);
+    TaskResponse createTask(TaskVO taskVO);
 
-    TaskVO updateTask(TaskVO taskVO);
+    TaskResponse updateTask(TaskVO taskVO);
 
-    TaskVO updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
+    TaskResponse updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
 
-    TaskVO findTaskById(String id);
+    TaskResponse findTaskById(String id);
 
-    Page<TaskVO> findAllTasks(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable);
+    Page<TaskResponse> findAllTasks(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable);
 
 
     void deleteTaskById(String id);

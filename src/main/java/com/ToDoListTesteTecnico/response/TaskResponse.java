@@ -1,59 +1,27 @@
-package com.ToDoListTesteTecnico.entity;
-
+package com.ToDoListTesteTecnico.response;
 
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.ToDoListTesteTecnico.entity.SubtaskEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "tasks")
+public class TaskResponse {
 
-public class TaskEntity {
-
-    @Id
     private String id;
     private String title;
     private String description;
-    @Column(name = "due_date")
     private LocalDateTime dueDate;
-    @Enumerated(EnumType.STRING)
     private Status status;
-    @Enumerated(EnumType.STRING)
     private Priority priority;
-
-    @OneToMany(fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "task_subtasks",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "subtask_id")
-    )
     private List<SubtaskEntity> subTasks = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
-
-    public TaskEntity() {
+    public TaskResponse() {
     }
 
-
-    public TaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks, UserEntity user) {
+    public TaskResponse(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -61,7 +29,6 @@ public class TaskEntity {
         this.status = status;
         this.priority = priority;
         this.subTasks = subTasks;
-        this.user = user;
     }
 
     public String getId() {
@@ -118,13 +85,5 @@ public class TaskEntity {
 
     public void setSubTasks(List<SubtaskEntity> subTasks) {
         this.subTasks = subTasks;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
     }
 }

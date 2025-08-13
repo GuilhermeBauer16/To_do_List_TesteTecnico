@@ -14,6 +14,7 @@ import com.ToDoListTesteTecnico.factory.SubtaskFactory;
 import com.ToDoListTesteTecnico.mapper.BuilderMapper;
 import com.ToDoListTesteTecnico.repository.SubtaskRepository;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
+import com.ToDoListTesteTecnico.response.TaskResponse;
 import com.ToDoListTesteTecnico.service.contract.SubTaskServiceContract;
 import com.ToDoListTesteTecnico.service.user.UserService;
 import com.ToDoListTesteTecnico.utils.ValidatorUtils;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SubtaskService implements SubTaskServiceContract {
@@ -44,7 +46,8 @@ public class SubtaskService implements SubTaskServiceContract {
 
 
     @Override
-    public SubtaskVO createSubtask(SubtaskVO subtaskVO) {
+    @Transactional
+    public SubtaskEntity createSubtask(SubtaskVO subtaskVO) {
 
         ValidatorUtils.checkObjectIsNullOrThrowException(subtaskVO, INVALID_SUBTASK_EXCEPTION_MESSAGE, InvalidSubTaskException.class);
         UserVO userByEmail = userService.findUserByEmail(retrieveUserEmail());
@@ -58,22 +61,23 @@ public class SubtaskService implements SubTaskServiceContract {
                 subtaskVO.getDueDate(), subtaskVO.getStatus(), subtaskVO.getPriority(), userEntity);
 
         ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(subtaskEntity, INVALID_SUBTASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
-        repository.save(subtaskEntity);
-        return BuilderMapper.parseObject(new SubtaskVO(), subtaskEntity);
+
+        return repository.save(subtaskEntity);
 
     }
 
     @Override
-    public TaskVO addSubTaskToTask(String taskId, SubtaskVO subtaskVO) {
+    @Transactional
+    public TaskResponse addSubTaskToTask(String taskId, SubtaskVO subtaskVO) {
 
 
-        TaskVO taskVO = taskService.findTaskById(taskId);
+        TaskResponse taskVO = taskService.findTaskById(taskId);
 
-        SubtaskVO subtask = createSubtask(subtaskVO);
-        SubtaskEntity subtaskEntity = BuilderMapper.parseObject(new SubtaskEntity(), subtask);
-        taskVO.getSubTasks().add(subtaskEntity);
-
-        return taskService.updateTask(taskVO);
+        SubtaskEntity subtask = createSubtask(subtaskVO);
+        taskVO.getSubTasks().add(subtask);
+        TaskVO taskVO1 = BuilderMapper.parseObject(new TaskVO(), taskVO);
+        TaskResponse taskResponse = taskService.updateTask(taskVO1);
+        return taskResponse;
     }
 
     @Override
@@ -92,7 +96,7 @@ public class SubtaskService implements SubTaskServiceContract {
     @Override
     public SubtaskVO findSubTaskById(String id) {
 
-        SubtaskEntity subtaskEntity = repository.findById(id).orElseThrow(() -> new SubTaskNotFoundException(SUBTASK_NOT_FOUND_EXCEPTION_MESSAGE));
+        SubtaskEntity subtaskEntity = repository.findByIdAndUserEmail(id, retrieveUserEmail()).orElseThrow(() -> new SubTaskNotFoundException(SUBTASK_NOT_FOUND_EXCEPTION_MESSAGE));
         return BuilderMapper.parseObject(new SubtaskVO(), subtaskEntity);
     }
 

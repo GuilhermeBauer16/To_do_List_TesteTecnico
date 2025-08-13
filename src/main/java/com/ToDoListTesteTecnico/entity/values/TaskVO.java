@@ -3,7 +3,6 @@ package com.ToDoListTesteTecnico.entity.values;
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.SubtaskEntity;
-import com.ToDoListTesteTecnico.entity.TaskEntity;
 import com.ToDoListTesteTecnico.entity.UserEntity;
 
 import java.time.LocalDateTime;
@@ -22,17 +21,8 @@ public class TaskVO {
     private List<SubtaskEntity> subTasks = new ArrayList<>();
     private UserEntity user;
 
-    public TaskVO() {
-    }
 
-    public TaskVO(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.dueDate = dueDate;
-        this.status = status;
-        this.priority = priority;
-        this.subTasks = subTasks;
+    public TaskVO() {
     }
 
     public TaskVO(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks, UserEntity user) {

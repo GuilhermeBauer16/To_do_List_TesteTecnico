@@ -1,28 +1,55 @@
 package com.ToDoListTesteTecnico.service.user;
 
 
+import com.ToDoListTesteTecnico.Enum.UserProfile;
 import com.ToDoListTesteTecnico.entity.UserEntity;
 import com.ToDoListTesteTecnico.entity.values.UserVO;
+import com.ToDoListTesteTecnico.exception.EmailAllReadyRegisterException;
 import com.ToDoListTesteTecnico.exception.UserNotFoundException;
 import com.ToDoListTesteTecnico.exception.utils.FieldNotFoundException;
+import com.ToDoListTesteTecnico.factory.UserFactory;
 import com.ToDoListTesteTecnico.mapper.BuilderMapper;
 import com.ToDoListTesteTecnico.repository.UserRepository;
-import com.ToDoListTesteTecnico.request.UserUpdateRequest;
+import com.ToDoListTesteTecnico.response.UserResponse;
 import com.ToDoListTesteTecnico.service.contract.UserServiceContract;
 import com.ToDoListTesteTecnico.utils.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements UserServiceContract {
 
+    private static final String USER_NOT_FOUND_MESSAGE = "That User was not found";
+    private static final String EMAIL_ALREADY_REGISTER_MESSAGE = "The email %s is already registered for another user!";
+
+
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    private final String USER_NOT_FOUND_MESSAGE = "User was not found!, Please verify and try again.";
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+
+    }
+
+    @Override
+    @Transactional
+    public UserResponse createUser(UserVO userVO) {
+
+        ValidatorUtils.checkObjectIsNullOrThrowException(userVO, USER_NOT_FOUND_MESSAGE, UserNotFoundException.class);
+        userVO.setPassword(passwordEncoder.encode(userVO.getPassword()));
+
+        checkIfEmailAlreadyRegistered(userVO.getEmail());
+
+        UserEntity userFactory = UserFactory.create(userVO.getName(), userVO.getEmail(), userVO.getPassword(), UserProfile.ROLE_USER);
+        ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(userFactory, USER_NOT_FOUND_MESSAGE, FieldNotFoundException.class);
+        UserEntity userEntity = userRepository.save(userFactory);
+        return BuilderMapper.parseObject(new UserResponse(), userEntity);
     }
 
     @Override
@@ -32,19 +59,11 @@ public class UserService implements UserServiceContract {
         return BuilderMapper.parseObject(new UserVO(), userEntity);
     }
 
-    @Override
-    public UserVO updateUser(UserUpdateRequest userUpdateRequest) {
+    private void checkIfEmailAlreadyRegistered(String email) {
 
-        UserEntity userEntity = userRepository.findUserByEmail(userUpdateRequest.getEmail())
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_MESSAGE));
+        if (userRepository.findUserByEmail(email).isPresent()) {
 
-        UserVO userVO = BuilderMapper
-                .parseObject(new UserVO(), userUpdateRequest);
-
-        UserEntity updatedUser = ValidatorUtils.updateFieldIfNotNull(userEntity, userVO, USER_NOT_FOUND_MESSAGE, FieldNotFoundException.class);
-        ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(updatedUser,USER_NOT_FOUND_MESSAGE, FieldNotFoundException.class);
-        userRepository.save(updatedUser);
-
-        return BuilderMapper.parseObject(new UserVO(), updatedUser);
+            throw new EmailAllReadyRegisterException(String.format(EMAIL_ALREADY_REGISTER_MESSAGE, email));
+        }
     }
 }

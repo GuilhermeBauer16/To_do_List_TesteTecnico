@@ -10,9 +10,6 @@ public class UserVO {
     private String email;
     private String password;
     private UserProfile userProfile;
-//    private String verifyCode;
-//    private boolean authenticated;
-//    private LocalDateTime codeExpiration;
 
 
     public UserVO() {

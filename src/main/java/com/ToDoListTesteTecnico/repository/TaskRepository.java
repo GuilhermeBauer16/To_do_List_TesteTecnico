@@ -11,15 +11,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<TaskEntity, String>, JpaSpecificationExecutor<TaskEntity> {
 
-    @Query("SELECT t FROM TaskEntity t WHERE t.status = :status")
-    Page<TaskEntity> findAllTasksByStatus(@Param("status") Status  status, Pageable pageable);
-
-    @Query("SELECT t FROM TaskEntity t WHERE t.priority = :priority")
-    Page<TaskEntity> findAllTasksByPriority(@Param("priority") Priority priority, Pageable pageable);
-
-    @Query("SELECT t FROM TaskEntity t WHERE t.dueDate = :dueDate")
-    Page<TaskEntity> findAllTasksByDueDate(@Param("dueDate") LocalDateTime dueDate, Pageable pageable);
+    @Query("SELECT t FROM TaskEntity t WHERE t.id = :taskId AND t.user.email = :email")
+    Optional<TaskEntity> findByIdAndUserEmail(@Param("taskId") String taskId, @Param("email") String email);
 }
