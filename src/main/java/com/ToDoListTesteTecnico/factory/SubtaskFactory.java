@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class TaskFactory {
+public class SubtaskFactory {
 
-    public TaskFactory() {
+    public SubtaskFactory() {
     }
 
-    public static TaskEntity createTask(String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks) {
-        return new TaskEntity(UUID.randomUUID().toString(), title, description, dueDate, status, priority,subTasks);
+    public static SubtaskEntity createSubtask(String title, String description, LocalDateTime dueDate, Status status, Priority priority) {
+        return new SubtaskEntity(UUID.randomUUID().toString(), title, description, dueDate, status, priority);
     }
 
 

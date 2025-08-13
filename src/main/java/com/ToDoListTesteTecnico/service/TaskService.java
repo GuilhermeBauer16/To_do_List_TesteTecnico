@@ -46,7 +46,13 @@ public class TaskService implements TaskServiceContract {
 
     @Override
     public TaskVO updateTask(TaskVO taskVO) {
-        return null;
+
+        ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, TASK_NOT_FOUND_EXCEPTION_MESSAGE, TaskNotFoundException.class);
+        TaskVO taskById = getTaskById(taskVO.getId());
+        TaskEntity taskEntity = BuilderMapper.parseObject(new TaskEntity(), taskById);
+        TaskEntity updatedTask = ValidatorUtils.updateFieldIfNotNull(taskEntity, taskVO, TASK_NOT_FOUND_EXCEPTION_MESSAGE, FieldNotFoundException.class);
+        repository.save(updatedTask);
+        return BuilderMapper.parseObject(new TaskVO(), updatedTask);
     }
 
     @Override

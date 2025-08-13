@@ -1,36 +1,45 @@
-package com.ToDoListTesteTecnico.entity.values;
+package com.ToDoListTesteTecnico.entity;
+
 
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
-import com.ToDoListTesteTecnico.entity.SubtaskEntity;
-import com.ToDoListTesteTecnico.entity.TaskEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
+@Entity
+@Table(name = "subtasks")
 
-public class TaskVO {
+public class SubtaskEntity {
 
+    @Id
     private String id;
     private String title;
     private String description;
+    @Column(name = "due_date")
     private LocalDateTime dueDate;
+    @Enumerated(EnumType.STRING)
     private Status status;
+    @Enumerated(EnumType.STRING)
     private Priority priority;
-    private List<SubtaskEntity> subTasks = new ArrayList<>();
 
-    public TaskVO() {
+
+    public SubtaskEntity() {
     }
 
-    public TaskVO(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks) {
+
+    public SubtaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
         this.priority = priority;
-        this.subTasks = subTasks;
     }
 
     public String getId() {
@@ -80,12 +89,5 @@ public class TaskVO {
     public void setPriority(Priority priority) {
         this.priority = priority;
     }
-
-    public List<SubtaskEntity> getSubTasks() {
-        return subTasks;
-    }
-
-    public void setSubTasks(List<SubtaskEntity> subTasks) {
-        this.subTasks = subTasks;
-    }
 }
+

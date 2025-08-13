@@ -4,7 +4,9 @@ package com.ToDoListTesteTecnico.controller;
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.controller.contract.TaskControllerContract;
+import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
+import com.ToDoListTesteTecnico.service.SubtaskService;
 import com.ToDoListTesteTecnico.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,10 +29,12 @@ import java.time.LocalDateTime;
 public class TaskController implements TaskControllerContract {
 
     private final TaskService taskService;
+    private final SubtaskService subtaskService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, SubtaskService subtaskService) {
         this.taskService = taskService;
+        this.subtaskService = subtaskService;
     }
 
     @Override
@@ -70,5 +74,12 @@ public class TaskController implements TaskControllerContract {
     @Override
     public void deleteTaskById(String id) {
 
+    }
+
+    @Override
+    @PostMapping("/{taskId}/subtask")
+    public ResponseEntity<TaskVO> addSubTaskToTask(@PathVariable("taskId") String taskId, @RequestBody SubtaskVO subtaskVO) {
+        TaskVO taskVO = subtaskService.addSubTaskToTask(taskId, subtaskVO);
+        return new ResponseEntity<>(taskVO, HttpStatus.CREATED);
     }
 }

@@ -1,12 +1,14 @@
 package com.ToDoListTesteTecnico.service.contract;
 
+import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
-import com.ToDoListTesteTecnico.request.SubTaskRequest;
 import com.ToDoListTesteTecnico.request.SubTaskUpdateRequest;
 
 public interface SubTaskServiceContract {
 
-    TaskVO addSubTask(SubTaskRequest subTaskRequest);
+    SubtaskVO createSubtask(SubtaskVO subtaskVO);
 
-    TaskVO updateSubTask(SubTaskUpdateRequest subTaskUpdateRequest);
+    TaskVO addSubTaskToTask(String taskId, SubtaskVO subtaskVO);
+
+    SubtaskVO updateSubTaskStatus(SubTaskUpdateRequest subTaskUpdateRequest);
 }

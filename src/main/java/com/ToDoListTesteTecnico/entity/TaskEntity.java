@@ -40,13 +40,13 @@ public class TaskEntity {
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "subtask_id")
     )
-    private List<TaskEntity> subTasks = new ArrayList<>();
+    private List<SubtaskEntity> subTasks = new ArrayList<>();
 
     public TaskEntity() {
     }
 
 
-    public TaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<TaskEntity> subTasks) {
+    public TaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -104,11 +104,11 @@ public class TaskEntity {
         this.priority = priority;
     }
 
-    public List<TaskEntity> getSubTasks() {
+    public List<SubtaskEntity> getSubTasks() {
         return subTasks;
     }
 
-    public void setSubTasks(List<TaskEntity> subTasks) {
+    public void setSubTasks(List<SubtaskEntity> subTasks) {
         this.subTasks = subTasks;
     }
 }
