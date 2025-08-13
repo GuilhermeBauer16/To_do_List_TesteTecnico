@@ -35,6 +35,17 @@ public class TaskVO {
         this.subTasks = subTasks;
     }
 
+    public TaskVO(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks, UserEntity user) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.status = status;
+        this.priority = priority;
+        this.subTasks = subTasks;
+        this.user = user;
+    }
+
     public String getId() {
         return id;
     }
@@ -89,5 +100,13 @@ public class TaskVO {
 
     public void setSubTasks(List<SubtaskEntity> subTasks) {
         this.subTasks = subTasks;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }

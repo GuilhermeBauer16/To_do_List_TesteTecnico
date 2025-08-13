@@ -26,8 +26,8 @@ import java.util.List;
 public class SecurityConfig {
 
 
-    private static final String[] CSRF_IGNORE_REQUEST_MATCHER = {"/user/**"};
-    private static final String[] ADMIN_RESOURCES = {"/product/**"};
+    private static final String[] CSRF_IGNORE_REQUEST_MATCHER = {"/user/**","/login/**","/task/**","/subtask/**"};
+    private static final String[] USER_RESOURCES = {"/task/**","/subtask/**"};
     private static final String ROLE_USER = "USER";
 
 
@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorizeHttpRequests -> authorizeHttpRequests
 
-                                .requestMatchers(ADMIN_RESOURCES).hasRole(ROLE_USER)
+                                .requestMatchers(USER_RESOURCES).hasRole(ROLE_USER)
                                 .anyRequest().permitAll()
 
 
