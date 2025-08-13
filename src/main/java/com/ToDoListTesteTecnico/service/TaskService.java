@@ -4,7 +4,9 @@ import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.SubtaskEntity;
 import com.ToDoListTesteTecnico.entity.TaskEntity;
+import com.ToDoListTesteTecnico.entity.UserEntity;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
+import com.ToDoListTesteTecnico.entity.values.UserVO;
 import com.ToDoListTesteTecnico.exception.utils.FieldNotFoundException;
 import com.ToDoListTesteTecnico.exception.task.InvalidTaskException;
 import com.ToDoListTesteTecnico.exception.task.InvalidTaskStatusException;
@@ -15,6 +17,7 @@ import com.ToDoListTesteTecnico.mapper.BuilderMapper;
 import com.ToDoListTesteTecnico.repository.TaskRepository;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
 import com.ToDoListTesteTecnico.service.contract.TaskServiceContract;
+import com.ToDoListTesteTecnico.service.user.UserService;
 import com.ToDoListTesteTecnico.utils.TaskSpecificatios;
 import com.ToDoListTesteTecnico.utils.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,21 +42,24 @@ public class TaskService implements TaskServiceContract {
 
 
     private final TaskRepository repository;
+    private final UserService userService;
 
     @Autowired
-    public TaskService(TaskRepository repository) {
+    public TaskService(TaskRepository repository, UserService userService) {
         this.repository = repository;
+        this.userService = userService;
     }
 
     @Override
     public TaskVO createTask(TaskVO taskVO) {
 
         ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, INVALID_TASK_EXCEPTION_MESSAGE, InvalidTaskException.class);
-
+        UserVO userByEmail = userService.findUserByEmail(retrieveUserEmail());
+        UserEntity userEntity = BuilderMapper.parseObject(new UserEntity(), userByEmail);
         if (taskVO.getStatus() == Status.COMPLETED) {
             throw new InvalidTaskStatusException(INVALID_TASK_STATUS_EXCEPTION_MESSAGE);
         }
-        TaskEntity taskEntity = TaskFactory.createTask(taskVO.getTitle(), taskVO.getDescription(), taskVO.getDueDate(), taskVO.getStatus(), taskVO.getPriority(), taskVO.getSubTasks());
+        TaskEntity taskEntity = TaskFactory.createTask(taskVO.getTitle(), taskVO.getDescription(), taskVO.getDueDate(), taskVO.getStatus(), taskVO.getPriority(), taskVO.getSubTasks(),userEntity);
         ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(taskEntity, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
         repository.save(taskEntity);
         return BuilderMapper.parseObject(new TaskVO(), taskEntity);
@@ -123,6 +131,13 @@ public class TaskService implements TaskServiceContract {
 
         }
 
+
+    }
+
+    private String retrieveUserEmail() {
+
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal.getUsername();
 
     }
 

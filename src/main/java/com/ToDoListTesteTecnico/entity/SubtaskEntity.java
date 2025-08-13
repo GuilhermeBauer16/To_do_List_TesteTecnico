@@ -7,7 +7,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
@@ -28,18 +31,22 @@ public class SubtaskEntity {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
+
 
     public SubtaskEntity() {
     }
 
-
-    public SubtaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority) {
+    public SubtaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, UserEntity user) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
         this.priority = priority;
+        this.user = user;
     }
 
     public String getId() {
@@ -88,6 +95,14 @@ public class SubtaskEntity {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }
 

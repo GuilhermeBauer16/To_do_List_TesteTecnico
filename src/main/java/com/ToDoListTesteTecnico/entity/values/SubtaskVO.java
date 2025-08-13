@@ -3,6 +3,7 @@ package com.ToDoListTesteTecnico.entity.values;
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.TaskEntity;
+import com.ToDoListTesteTecnico.entity.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class SubtaskVO {
     private LocalDateTime dueDate;
     private Status status;
     private Priority priority;
+    private UserEntity user;
 
     public SubtaskVO() {
     }

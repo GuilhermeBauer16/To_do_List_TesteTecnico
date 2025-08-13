@@ -4,6 +4,7 @@ import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.SubtaskEntity;
 import com.ToDoListTesteTecnico.entity.TaskEntity;
+import com.ToDoListTesteTecnico.entity.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class TaskVO {
     private Status status;
     private Priority priority;
     private List<SubtaskEntity> subTasks = new ArrayList<>();
+    private UserEntity user;
 
     public TaskVO() {
     }
