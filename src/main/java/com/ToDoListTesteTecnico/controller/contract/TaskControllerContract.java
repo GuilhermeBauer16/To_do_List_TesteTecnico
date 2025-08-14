@@ -17,16 +17,16 @@ import java.time.LocalDateTime;
 public interface TaskControllerContract {
 
 
-    ResponseEntity<TaskResponse> createTask(@RequestBody TaskVO task);
+    ResponseEntity<TaskVO> createTask(@RequestBody TaskVO task);
 
-    ResponseEntity<TaskResponse> updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
+    ResponseEntity<TaskVO> updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
 
-    ResponseEntity<TaskResponse> findTaskById(String id);
+    ResponseEntity<TaskVO> findTaskById(String id);
 
-    ResponseEntity<Page<TaskResponse>> findAllTasks(Status status, Priority priority,
+    ResponseEntity<Page<TaskVO>> findAllTasks(Status status, Priority priority,
                                               LocalDateTime dueDate, Pageable pageable);
 
     ResponseEntity<Void> deleteTaskById(String id);
 
-    ResponseEntity<TaskResponse> addSubTaskToTask(String taskId, SubtaskVO subtaskVO);
+    ResponseEntity<TaskVO> addSubTaskToTask(String taskId, SubtaskVO subtaskVO);
 }

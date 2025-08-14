@@ -13,17 +13,15 @@ import java.time.LocalDateTime;
 
 public interface TaskServiceContract {
 
-    TaskResponse createTask(TaskVO taskVO);
+    TaskVO createTask(TaskVO taskVO);
 
-    TaskResponse updateTask(TaskVO taskVO);
+    TaskVO updateTask(TaskVO taskVO);
 
-    TaskResponse updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
+    TaskVO updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
 
     TaskVO findTaskById(String id);
 
-    TaskResponse findTaskByIdWithResponse(String id);
-
-    Page<TaskResponse> findAllTasks(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable);
+    Page<TaskVO> findAllTasks(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable);
 
 
     void deleteTaskById(String id);

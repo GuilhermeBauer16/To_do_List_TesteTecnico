@@ -2,8 +2,8 @@ package com.ToDoListTesteTecnico.controller;
 
 
 import com.ToDoListTesteTecnico.controller.contract.SubtaskControllerContract;
+import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
-import com.ToDoListTesteTecnico.response.SubtaskResponse;
 import com.ToDoListTesteTecnico.service.SubtaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,18 +28,18 @@ public class SubTaskController implements SubtaskControllerContract {
 
     @Override
     @PatchMapping("updateStatus/{id}")
-    public ResponseEntity<SubtaskResponse> updateSubTaskStatus(@PathVariable("id") String id, @RequestBody UpdateStatusRequest updateStatusRequest) {
+    public ResponseEntity<SubtaskVO> updateSubTaskStatus(@PathVariable("id") String id, @RequestBody UpdateStatusRequest updateStatusRequest) {
 
-        SubtaskResponse subtaskResponse = subtaskService.updateSubTaskStatus(id, updateStatusRequest);
-        return ResponseEntity.ok(subtaskResponse);
+        SubtaskVO subtaskVO = subtaskService.updateSubTaskStatus(id, updateStatusRequest);
+        return ResponseEntity.ok(subtaskVO);
     }
 
 
     @Override
     @GetMapping("/findSubtask/{id}")
-    public ResponseEntity<SubtaskResponse> findSubTaskById(@PathVariable("id") String id) {
-        SubtaskResponse subtaskResponse = subtaskService.findSubTaskById(id);
-        return ResponseEntity.ok(subtaskResponse);
+    public ResponseEntity<SubtaskVO> findSubTaskById(@PathVariable("id") String id) {
+        SubtaskVO subtaskVO = subtaskService.findSubTaskById(id);
+        return ResponseEntity.ok(subtaskVO);
     }
 
     @Override

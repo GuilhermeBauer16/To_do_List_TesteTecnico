@@ -14,8 +14,6 @@ import com.ToDoListTesteTecnico.factory.SubtaskFactory;
 import com.ToDoListTesteTecnico.mapper.BuilderMapper;
 import com.ToDoListTesteTecnico.repository.SubtaskRepository;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
-import com.ToDoListTesteTecnico.response.SubtaskResponse;
-import com.ToDoListTesteTecnico.response.TaskResponse;
 import com.ToDoListTesteTecnico.service.contract.SubTaskServiceContract;
 import com.ToDoListTesteTecnico.service.user.UserService;
 import com.ToDoListTesteTecnico.utils.ValidatorUtils;
@@ -23,9 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class SubtaskService implements SubTaskServiceContract {
@@ -43,7 +38,6 @@ public class SubtaskService implements SubTaskServiceContract {
     public SubtaskService(TaskService taskService, SubtaskRepository subtaskRepository, UserService userService) {
         this.taskService = taskService;
         this.repository = subtaskRepository;
-
         this.userService = userService;
     }
 
@@ -71,23 +65,20 @@ public class SubtaskService implements SubTaskServiceContract {
 
     @Override
 
-    public TaskResponse addSubTaskToTask(String taskId, SubtaskVO subtaskVO) {
+    public TaskVO addSubTaskToTask(String taskId, SubtaskVO subtaskVO) {
 
 
         TaskVO taskVO = taskService.findTaskById(taskId);
 
         SubtaskEntity subtask = createSubtask(subtaskVO);
         taskVO.getSubTasks().add(subtask);
-        taskService.updateTask(taskVO);
-        TaskResponse taskResponse = BuilderMapper.parseObject(new TaskResponse(), taskVO);
-        List<SubtaskResponse> subtaskResponses = parseToSubtaskResponse(taskVO.getSubTasks());
-        taskResponse.setSubTasks(subtaskResponses);
 
-        return taskResponse;
+
+        return taskService.updateTask(taskVO);
     }
 
     @Override
-    public SubtaskResponse updateSubTaskStatus(String id, UpdateStatusRequest updateStatusRequest) {
+    public SubtaskVO updateSubTaskStatus(String id, UpdateStatusRequest updateStatusRequest) {
 
         SubtaskEntity subtaskEntity = repository.findByIdAndUserEmail(id, retrieveUserEmail())
                 .orElseThrow(() -> new SubTaskNotFoundException(SUBTASK_NOT_FOUND_EXCEPTION_MESSAGE));
@@ -96,15 +87,15 @@ public class SubtaskService implements SubTaskServiceContract {
                 subtaskEntity, INVALID_SUBTASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
 
         repository.save(updatedSubtaskEntity);
-        return BuilderMapper.parseObject(new SubtaskResponse(), updatedSubtaskEntity);
+        return BuilderMapper.parseObject(new SubtaskVO(), updatedSubtaskEntity);
     }
 
 
     @Override
-    public SubtaskResponse findSubTaskById(String id) {
+    public SubtaskVO findSubTaskById(String id) {
 
         SubtaskEntity subtaskEntity = repository.findByIdAndUserEmail(id, retrieveUserEmail()).orElseThrow(() -> new SubTaskNotFoundException(SUBTASK_NOT_FOUND_EXCEPTION_MESSAGE));
-        return BuilderMapper.parseObject(new SubtaskResponse(), subtaskEntity);
+        return BuilderMapper.parseObject(new SubtaskVO(), subtaskEntity);
     }
 
     @Override
@@ -122,16 +113,6 @@ public class SubtaskService implements SubTaskServiceContract {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getUsername();
 
-    }
-
-
-    private List<SubtaskResponse> parseToSubtaskResponse(List<SubtaskEntity> subtaskEntities) {
-        List<SubtaskResponse> subtaskResponseList = new ArrayList<>();
-        for (SubtaskEntity subtaskEntity : subtaskEntities) {
-            SubtaskResponse subtaskResponse = BuilderMapper.parseObject(new SubtaskResponse(), subtaskEntity);
-            subtaskResponseList.add(subtaskResponse);
-        }
-        return subtaskResponseList;
     }
 
 

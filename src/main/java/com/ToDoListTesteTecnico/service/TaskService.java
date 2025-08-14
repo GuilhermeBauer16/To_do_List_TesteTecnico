@@ -16,8 +16,6 @@ import com.ToDoListTesteTecnico.factory.TaskFactory;
 import com.ToDoListTesteTecnico.mapper.BuilderMapper;
 import com.ToDoListTesteTecnico.repository.TaskRepository;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
-import com.ToDoListTesteTecnico.response.SubtaskResponse;
-import com.ToDoListTesteTecnico.response.TaskResponse;
 import com.ToDoListTesteTecnico.service.contract.TaskServiceContract;
 import com.ToDoListTesteTecnico.service.user.UserService;
 import com.ToDoListTesteTecnico.utils.TaskSpecificatios;
@@ -32,7 +30,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -54,7 +51,7 @@ public class TaskService implements TaskServiceContract {
     }
 
     @Override
-    public TaskResponse createTask(TaskVO taskVO) {
+    public TaskVO createTask(TaskVO taskVO) {
 
         ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, INVALID_TASK_EXCEPTION_MESSAGE, InvalidTaskException.class);
         UserVO userByEmail = userService.findUserByEmail(retrieveUserEmail());
@@ -65,14 +62,13 @@ public class TaskService implements TaskServiceContract {
         TaskEntity taskEntity = TaskFactory.createTask(taskVO.getTitle(), taskVO.getDescription(), taskVO.getDueDate(), taskVO.getStatus(), taskVO.getPriority(), taskVO.getSubTasks(), userEntity);
         ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(taskEntity, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
         repository.save(taskEntity);
-        TaskResponse taskResponse = BuilderMapper.parseObject(new TaskResponse(), taskEntity);
-        List<SubtaskResponse> subtaskResponses = parseToSubtaskResponse(taskEntity.getSubTasks());
-        taskResponse.setSubTasks(subtaskResponses);
-        return taskResponse;
+
+        return BuilderMapper.parseObject(new TaskVO(), taskEntity);
+
     }
 
     @Override
-    public TaskResponse updateTask(TaskVO taskVO) {
+    public TaskVO updateTask(TaskVO taskVO) {
 
         ValidatorUtils.checkObjectIsNullOrThrowException(taskVO, INVALID_TASK_EXCEPTION_MESSAGE, InvalidTaskException.class);
         TaskEntity taskEntity = repository.findByIdAndUserEmail(taskVO.getId(), retrieveUserEmail())
@@ -80,11 +76,11 @@ public class TaskService implements TaskServiceContract {
 
         TaskEntity updatedTask = ValidatorUtils.updateFieldIfNotNull(taskEntity, taskVO, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
         repository.save(updatedTask);
-        return BuilderMapper.parseObject(new TaskResponse(), updatedTask);
+        return BuilderMapper.parseObject(new TaskVO(), updatedTask);
     }
 
     @Override
-    public TaskResponse updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest) {
+    public TaskVO updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest) {
 
         TaskEntity taskEntity = repository.findByIdAndUserEmail(id, retrieveUserEmail())
                 .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
@@ -98,10 +94,8 @@ public class TaskService implements TaskServiceContract {
 
         repository.save(updatedTaskEntity);
 
-        TaskResponse taskResponse = BuilderMapper.parseObject(new TaskResponse(), updatedTaskEntity);
-        List<SubtaskResponse> subtaskResponses = parseToSubtaskResponse(taskEntity.getSubTasks());
-        taskResponse.setSubTasks(subtaskResponses);
-        return taskResponse;
+        return BuilderMapper.parseObject(new TaskVO(), updatedTaskEntity);
+
 
     }
 
@@ -114,23 +108,11 @@ public class TaskService implements TaskServiceContract {
     }
 
     @Override
-    public TaskResponse findTaskByIdWithResponse(String id) {
-
-        TaskEntity taskEntity = repository.findByIdAndUserEmail(id, retrieveUserEmail())
-                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
-
-        TaskResponse taskResponse = BuilderMapper.parseObject(new TaskResponse(), taskEntity);
-        List<SubtaskResponse> subtaskResponses = parseToSubtaskResponse(taskEntity.getSubTasks());
-        taskResponse.setSubTasks(subtaskResponses);
-        return taskResponse;
-    }
-
-    @Override
-    public Page<TaskResponse> findAllTasks(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable) {
+    public Page<TaskVO> findAllTasks(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable) {
 
         Specification<TaskEntity> taskEntitySpecification = TaskSpecificatios.withFilters(status, priority, dueDate);
         Page<TaskEntity> tasksByStatus = repository.findAll(taskEntitySpecification, pageable);
-        List<TaskResponse> taskResponses = tasksByStatus.getContent().stream().map(taskEntity -> BuilderMapper.parseObject(new TaskResponse(), taskEntity)).toList();
+        List<TaskVO> taskResponses = tasksByStatus.getContent().stream().map(taskEntity -> BuilderMapper.parseObject(new TaskVO(), taskEntity)).toList();
         return new PageImpl<>(taskResponses, pageable, tasksByStatus.getTotalElements());
     }
 
@@ -164,15 +146,6 @@ public class TaskService implements TaskServiceContract {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getUsername();
 
-    }
-
-    private List<SubtaskResponse> parseToSubtaskResponse(List<SubtaskEntity> subtaskEntities) {
-        List<SubtaskResponse> subtaskResponseList = new ArrayList<>();
-        for (SubtaskEntity subtaskEntity : subtaskEntities) {
-            SubtaskResponse subtaskResponse = BuilderMapper.parseObject(new SubtaskResponse(), subtaskEntity);
-            subtaskResponseList.add(subtaskResponse);
-        }
-        return subtaskResponseList;
     }
 
 

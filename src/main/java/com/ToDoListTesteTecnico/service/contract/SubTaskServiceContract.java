@@ -11,11 +11,11 @@ public interface SubTaskServiceContract {
 
     SubtaskEntity createSubtask(SubtaskVO subtaskVO);
 
-    TaskResponse addSubTaskToTask(String taskId, SubtaskVO subtaskVO);
+    TaskVO addSubTaskToTask(String taskId, SubtaskVO subtaskVO);
 
-    SubtaskResponse updateSubTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
+    SubtaskVO updateSubTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
 
-    SubtaskResponse findSubTaskById(String id);
+    SubtaskVO findSubTaskById(String id);
 
     void deleteSubTask(String id);
 }
