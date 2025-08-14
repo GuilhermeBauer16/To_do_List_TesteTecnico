@@ -60,8 +60,8 @@ public class TaskController implements TaskControllerContract {
     @GetMapping("/findTask/{id}")
     public ResponseEntity<TaskVO> findTaskById(@PathVariable("id") String id) {
 
-        TaskVO taskById = taskService.findTaskById(id);
-        return ResponseEntity.ok(taskById);
+        TaskVO taskVO = taskService.findTaskById(id);
+        return ResponseEntity.ok(taskVO);
     }
 
     @Override

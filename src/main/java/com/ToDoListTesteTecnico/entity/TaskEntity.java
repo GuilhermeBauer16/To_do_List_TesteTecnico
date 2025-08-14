@@ -3,6 +3,7 @@ package com.ToDoListTesteTecnico.entity;
 
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -44,11 +46,16 @@ public class TaskEntity {
     )
     private List<SubtaskEntity> subTasks = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private UserEntity user;
+
     public TaskEntity() {
     }
 
 
-    public TaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks) {
+    public TaskEntity(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks, UserEntity user) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -56,6 +63,7 @@ public class TaskEntity {
         this.status = status;
         this.priority = priority;
         this.subTasks = subTasks;
+        this.user = user;
     }
 
     public String getId() {
@@ -112,5 +120,13 @@ public class TaskEntity {
 
     public void setSubTasks(List<SubtaskEntity> subTasks) {
         this.subTasks = subTasks;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }

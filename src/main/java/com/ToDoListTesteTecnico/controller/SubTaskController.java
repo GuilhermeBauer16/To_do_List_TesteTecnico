@@ -3,7 +3,6 @@ package com.ToDoListTesteTecnico.controller;
 
 import com.ToDoListTesteTecnico.controller.contract.SubtaskControllerContract;
 import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
-import com.ToDoListTesteTecnico.entity.values.TaskVO;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
 import com.ToDoListTesteTecnico.service.SubtaskService;
 import org.springframework.beans.factory.annotation.Autowired;
