@@ -3,7 +3,8 @@ package com.ToDoListTesteTecnico.entity.values;
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.SubtaskEntity;
-import com.ToDoListTesteTecnico.entity.TaskEntity;
+import com.ToDoListTesteTecnico.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,11 +20,14 @@ public class TaskVO {
     private Status status;
     private Priority priority;
     private List<SubtaskEntity> subTasks = new ArrayList<>();
+    @JsonIgnore
+    private UserEntity user;
+
 
     public TaskVO() {
     }
 
-    public TaskVO(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks) {
+    public TaskVO(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks, UserEntity user) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -31,6 +35,7 @@ public class TaskVO {
         this.status = status;
         this.priority = priority;
         this.subTasks = subTasks;
+        this.user = user;
     }
 
     public String getId() {
@@ -88,4 +93,5 @@ public class TaskVO {
     public void setSubTasks(List<SubtaskEntity> subTasks) {
         this.subTasks = subTasks;
     }
+
 }

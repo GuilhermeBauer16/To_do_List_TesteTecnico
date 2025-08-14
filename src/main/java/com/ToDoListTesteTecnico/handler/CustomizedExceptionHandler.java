@@ -1,6 +1,8 @@
 package com.ToDoListTesteTecnico.handler;
 
+import com.ToDoListTesteTecnico.exception.user.EmailAllReadyRegisterException;
 import com.ToDoListTesteTecnico.exception.ExceptionResponse;
+import com.ToDoListTesteTecnico.exception.user.UserNotFoundException;
 import com.ToDoListTesteTecnico.exception.subtask.InvalidSubTaskException;
 import com.ToDoListTesteTecnico.exception.subtask.InvalidSubTaskStatusException;
 import com.ToDoListTesteTecnico.exception.subtask.SubTaskNotCompletedException;
@@ -28,7 +30,8 @@ public class CustomizedExceptionHandler {
     @ExceptionHandler({
             FieldNotFoundException.class,
             TaskNotFoundException.class,
-            SubTaskNotFoundException.class}
+            SubTaskNotFoundException.class,
+            UserNotFoundException.class,}
     )
     public final ResponseEntity<ExceptionResponse> handleWithNotFoundException(Exception exception, WebRequest webRequest) {
 
@@ -47,7 +50,8 @@ public class CustomizedExceptionHandler {
             InvalidSubTaskStatusException.class,
             InvalidSubTaskException.class,
             UnknownPriorityValueException.class,
-            UnknownStatusValueException.class
+            UnknownStatusValueException.class,
+            EmailAllReadyRegisterException.class
     })
     public final ResponseEntity<ExceptionResponse> handleWithBadRequestException(Exception exception, WebRequest webRequest) {
 
