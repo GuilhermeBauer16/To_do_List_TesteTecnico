@@ -1,16 +1,11 @@
-package com.ToDoListTesteTecnico.entity.values;
+package com.ToDoListTesteTecnico.response;
 
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
-import com.ToDoListTesteTecnico.entity.SubtaskEntity;
-import com.ToDoListTesteTecnico.entity.UserEntity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-
-public class TaskVO {
+public class SubtaskResponse {
 
     private String id;
     private String title;
@@ -18,22 +13,18 @@ public class TaskVO {
     private LocalDateTime dueDate;
     private Status status;
     private Priority priority;
-    private List<SubtaskEntity> subTasks = new ArrayList<>();
-    private UserEntity user;
 
-
-    public TaskVO() {
+    public SubtaskResponse() {
     }
 
-    public TaskVO(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks, UserEntity user) {
+    public SubtaskResponse(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
         this.priority = priority;
-        this.subTasks = subTasks;
-        this.user = user;
+
     }
 
     public String getId() {
@@ -82,14 +73,6 @@ public class TaskVO {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
-    }
-
-    public List<SubtaskEntity> getSubTasks() {
-        return subTasks;
-    }
-
-    public void setSubTasks(List<SubtaskEntity> subTasks) {
-        this.subTasks = subTasks;
     }
 
 }

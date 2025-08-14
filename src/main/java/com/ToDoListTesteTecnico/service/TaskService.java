@@ -16,6 +16,7 @@ import com.ToDoListTesteTecnico.factory.TaskFactory;
 import com.ToDoListTesteTecnico.mapper.BuilderMapper;
 import com.ToDoListTesteTecnico.repository.TaskRepository;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
+import com.ToDoListTesteTecnico.response.SubtaskResponse;
 import com.ToDoListTesteTecnico.response.TaskResponse;
 import com.ToDoListTesteTecnico.service.contract.TaskServiceContract;
 import com.ToDoListTesteTecnico.service.user.UserService;
@@ -31,6 +32,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -63,7 +65,10 @@ public class TaskService implements TaskServiceContract {
         TaskEntity taskEntity = TaskFactory.createTask(taskVO.getTitle(), taskVO.getDescription(), taskVO.getDueDate(), taskVO.getStatus(), taskVO.getPriority(), taskVO.getSubTasks(), userEntity);
         ValidatorUtils.checkFieldNotNullAndNotEmptyOrThrowException(taskEntity, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
         repository.save(taskEntity);
-        return BuilderMapper.parseObject(new TaskResponse(), taskEntity);
+        TaskResponse taskResponse = BuilderMapper.parseObject(new TaskResponse(), taskEntity);
+        List<SubtaskResponse> subtaskResponses = parseToSubtaskResponse(taskEntity.getSubTasks());
+        taskResponse.setSubTasks(subtaskResponses);
+        return taskResponse;
     }
 
     @Override
@@ -81,26 +86,43 @@ public class TaskService implements TaskServiceContract {
     @Override
     public TaskResponse updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest) {
 
-        TaskResponse taskVO = findTaskById(id);
+        TaskEntity taskEntity = repository.findByIdAndUserEmail(id, retrieveUserEmail())
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
 
         if (updateStatusRequest.getStatus() == Status.COMPLETED) {
-            checkSubtaskStatusIsCompleted(taskVO.getSubTasks());
+            checkSubtaskStatusIsCompleted(taskEntity.getSubTasks());
         }
-        taskVO.setStatus(updateStatusRequest.getStatus());
-        TaskEntity taskEntity = ValidatorUtils.updateFieldIfNotNull(new TaskEntity(),
-                taskVO, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
+        taskEntity.setStatus(updateStatusRequest.getStatus());
+        TaskEntity updatedTaskEntity = ValidatorUtils.updateFieldIfNotNull(new TaskEntity(),
+                taskEntity, INVALID_TASK_EXCEPTION_MESSAGE, FieldNotFoundException.class);
 
-        repository.save(taskEntity);
-        return BuilderMapper.parseObject(new TaskResponse(), taskEntity);
+        repository.save(updatedTaskEntity);
+
+        TaskResponse taskResponse = BuilderMapper.parseObject(new TaskResponse(), updatedTaskEntity);
+        List<SubtaskResponse> subtaskResponses = parseToSubtaskResponse(taskEntity.getSubTasks());
+        taskResponse.setSubTasks(subtaskResponses);
+        return taskResponse;
 
     }
 
     @Override
-    public TaskResponse findTaskById(String id) {
+    public TaskVO findTaskById(String id) {
 
-        TaskEntity taskEntity = repository.findByIdAndUserEmail(id,retrieveUserEmail())
+        TaskEntity taskEntity = repository.findByIdAndUserEmail(id, retrieveUserEmail())
                 .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
-        return BuilderMapper.parseObject(new TaskResponse(), taskEntity);
+        return BuilderMapper.parseObject(new TaskVO(), taskEntity);
+    }
+
+    @Override
+    public TaskResponse findTaskByIdWithResponse(String id) {
+
+        TaskEntity taskEntity = repository.findByIdAndUserEmail(id, retrieveUserEmail())
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
+
+        TaskResponse taskResponse = BuilderMapper.parseObject(new TaskResponse(), taskEntity);
+        List<SubtaskResponse> subtaskResponses = parseToSubtaskResponse(taskEntity.getSubTasks());
+        taskResponse.setSubTasks(subtaskResponses);
+        return taskResponse;
     }
 
     @Override
@@ -116,8 +138,8 @@ public class TaskService implements TaskServiceContract {
     @Override
     public void deleteTaskById(String id) {
 
-        TaskResponse taskById = findTaskById(id);
-        TaskEntity taskEntity = BuilderMapper.parseObject(new TaskEntity(), taskById);
+        TaskEntity taskEntity = repository.findByIdAndUserEmail(id, retrieveUserEmail())
+                .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_EXCEPTION_MESSAGE));
 
         repository.delete(taskEntity);
 
@@ -142,6 +164,15 @@ public class TaskService implements TaskServiceContract {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return principal.getUsername();
 
+    }
+
+    private List<SubtaskResponse> parseToSubtaskResponse(List<SubtaskEntity> subtaskEntities) {
+        List<SubtaskResponse> subtaskResponseList = new ArrayList<>();
+        for (SubtaskEntity subtaskEntity : subtaskEntities) {
+            SubtaskResponse subtaskResponse = BuilderMapper.parseObject(new SubtaskResponse(), subtaskEntity);
+            subtaskResponseList.add(subtaskResponse);
+        }
+        return subtaskResponseList;
     }
 
 

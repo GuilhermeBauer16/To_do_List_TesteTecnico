@@ -19,7 +19,9 @@ public interface TaskServiceContract {
 
     TaskResponse updateTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
 
-    TaskResponse findTaskById(String id);
+    TaskVO findTaskById(String id);
+
+    TaskResponse findTaskByIdWithResponse(String id);
 
     Page<TaskResponse> findAllTasks(Status status, Priority priority, LocalDateTime dueDate, Pageable pageable);
 

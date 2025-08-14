@@ -2,7 +2,6 @@ package com.ToDoListTesteTecnico.response;
 
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
-import com.ToDoListTesteTecnico.entity.SubtaskEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,12 +15,12 @@ public class TaskResponse {
     private LocalDateTime dueDate;
     private Status status;
     private Priority priority;
-    private List<SubtaskEntity> subTasks = new ArrayList<>();
+    private List<SubtaskResponse> subTasks = new ArrayList<>();
 
     public TaskResponse() {
     }
 
-    public TaskResponse(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskEntity> subTasks) {
+    public TaskResponse(String id, String title, String description, LocalDateTime dueDate, Status status, Priority priority, List<SubtaskResponse> subTasks) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -79,11 +78,11 @@ public class TaskResponse {
         this.priority = priority;
     }
 
-    public List<SubtaskEntity> getSubTasks() {
+    public List<SubtaskResponse> getSubTasks() {
         return subTasks;
     }
 
-    public void setSubTasks(List<SubtaskEntity> subTasks) {
+    public void setSubTasks(List<SubtaskResponse> subTasks) {
         this.subTasks = subTasks;
     }
 }
