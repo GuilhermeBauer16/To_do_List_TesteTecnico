@@ -3,11 +3,13 @@ package com.ToDoListTesteTecnico.config;
 
 import com.ToDoListTesteTecnico.filters.CsrfCookieFilter;
 import com.ToDoListTesteTecnico.filters.JwtValidationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,8 +28,9 @@ import java.util.List;
 public class SecurityConfig {
 
 
-    private static final String[] CSRF_IGNORE_REQUEST_MATCHER = {"/user/**","/login/**","/task/**","/subtask/**"};
-    private static final String[] USER_RESOURCES = {"/task/**","/subtask/**"};
+    private static final String[] CSRF_IGNORE_REQUEST_MATCHER = {"/user/**", "/login/**", "/task/**", "/subtask/**",
+            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"};
+    private static final String[] USER_RESOURCES = {"/task/**", "/subtask/**"};
     private static final String ROLE_USER = "USER";
 
 
