@@ -1,0 +1,195 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SecurityConfig</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ToDoListTesteTecnico.config</a>
+</div>
+
+<h1>Coverage Summary for Class: SecurityConfig (com.ToDoListTesteTecnico.config)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SecurityConfig</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ToDoListTesteTecnico.config;
+&nbsp;
+&nbsp;
+&nbsp;import com.ToDoListTesteTecnico.filters.CsrfCookieFilter;
+&nbsp;import com.ToDoListTesteTecnico.filters.JwtValidationFilter;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.context.annotation.Bean;
+&nbsp;import org.springframework.context.annotation.Configuration;
+&nbsp;import org.springframework.security.authentication.AuthenticationManager;
+&nbsp;import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+&nbsp;import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+&nbsp;import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+&nbsp;import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+&nbsp;import org.springframework.security.config.http.SessionCreationPolicy;
+&nbsp;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+&nbsp;import org.springframework.security.crypto.password.PasswordEncoder;
+&nbsp;import org.springframework.security.web.SecurityFilterChain;
+&nbsp;import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+&nbsp;import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+&nbsp;import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+&nbsp;import org.springframework.web.cors.CorsConfiguration;
+&nbsp;import org.springframework.web.cors.CorsConfigurationSource;
+&nbsp;import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Configuration
+<b class="nc">&nbsp;public class SecurityConfig {</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;    private static final String[] CSRF_IGNORE_REQUEST_MATCHER = {&quot;/user/**&quot;, &quot;/login/**&quot;, &quot;/task/**&quot;, &quot;/subtask/**&quot;,</b>
+&nbsp;            &quot;/v3/api-docs/**&quot;, &quot;/swagger-ui/**&quot;, &quot;/swagger-ui.html&quot;};
+<b class="nc">&nbsp;    private static final String[] USER_RESOURCES = {&quot;/task/**&quot;, &quot;/subtask/**&quot;};</b>
+&nbsp;    private static final String ROLE_USER = &quot;USER&quot;;
+&nbsp;
+&nbsp;
+&nbsp;    @Bean
+&nbsp;//    @Autowired
+&nbsp;    SecurityFilterChain securityFilterChain(HttpSecurity http, JwtValidationFilter jwtValidationFilter) throws Exception {
+<b class="nc">&nbsp;        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();</b>
+<b class="nc">&nbsp;        requestHandler.setCsrfRequestAttributeName(&quot;_csrf&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        return http</b>
+<b class="nc">&nbsp;                .httpBasic(AbstractHttpConfigurer::disable)</b>
+<b class="nc">&nbsp;                .csrf(csrf -&gt; csrf.csrfTokenRequestHandler(requestHandler)</b>
+<b class="nc">&nbsp;                        .ignoringRequestMatchers(CSRF_IGNORE_REQUEST_MATCHER)</b>
+<b class="nc">&nbsp;                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))</b>
+<b class="nc">&nbsp;                .sessionManagement(session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</b>
+<b class="nc">&nbsp;                .cors(cors -&gt; cors.configurationSource(corsConfigurationSource()))</b>
+<b class="nc">&nbsp;                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)</b>
+<b class="nc">&nbsp;                .addFilterAfter(jwtValidationFilter, BasicAuthenticationFilter.class)</b>
+<b class="nc">&nbsp;                .sessionManagement(</b>
+<b class="nc">&nbsp;                        session -&gt; session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))</b>
+<b class="nc">&nbsp;                .authorizeHttpRequests(</b>
+&nbsp;                        authorizeHttpRequests -&gt; authorizeHttpRequests
+&nbsp;
+<b class="nc">&nbsp;                                .requestMatchers(USER_RESOURCES).hasRole(ROLE_USER)</b>
+<b class="nc">&nbsp;                                .anyRequest().permitAll()</b>
+&nbsp;
+&nbsp;
+&nbsp;                )
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;                .build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    public PasswordEncoder passwordEncoder() {
+<b class="nc">&nbsp;        return new BCryptPasswordEncoder();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    CorsConfigurationSource corsConfigurationSource() {
+<b class="nc">&nbsp;        CorsConfiguration configuration = new CorsConfiguration();</b>
+<b class="nc">&nbsp;        configuration.setAllowedOrigins(List.of(&quot;*&quot;));</b>
+<b class="nc">&nbsp;        configuration.setAllowedMethods(List.of(&quot;*&quot;));</b>
+<b class="nc">&nbsp;        configuration.setAllowedHeaders(List.of(&quot;*&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource =</b>
+&nbsp;                new UrlBasedCorsConfigurationSource();
+&nbsp;
+<b class="nc">&nbsp;        urlBasedCorsConfigurationSource.registerCorsConfiguration(&quot;/**&quot;, configuration);</b>
+<b class="nc">&nbsp;        return urlBasedCorsConfigurationSource;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Bean
+&nbsp;    AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+<b class="nc">&nbsp;        return configuration.getAuthenticationManager();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-08-14 01:42</div>
+</div>
+</body>
+</html>

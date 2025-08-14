@@ -1,0 +1,224 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TaskSpecificatios</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ToDoListTesteTecnico.utils</a>
+</div>
+
+<h1>Coverage Summary for Class: TaskSpecificatios (com.ToDoListTesteTecnico.utils)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TaskSpecificatios</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ToDoListTesteTecnico.utils;
+&nbsp;
+&nbsp;import com.ToDoListTesteTecnico.Enum.Priority;
+&nbsp;import com.ToDoListTesteTecnico.Enum.Status;
+&nbsp;import com.ToDoListTesteTecnico.entity.TaskEntity;
+&nbsp;import org.springframework.data.jpa.domain.Specification;
+&nbsp;import org.springframework.security.core.context.SecurityContextHolder;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;
+&nbsp;
+&nbsp;/**
+&nbsp; * Utility class for creating {@link Specification} objects to filter {@link TaskEntity} instances.
+&nbsp; * &lt;p&gt;
+&nbsp; * Provides methods to build dynamic JPA Specifications based on task status, priority, due date,
+&nbsp; * and the currently authenticated user&#39;s email. These specifications can be used in repository queries
+&nbsp; * to retrieve filtered and secure task data.
+&nbsp; * &lt;/p&gt;
+&nbsp;
+&nbsp; */
+<b class="nc">&nbsp;public class TaskSpecificatios {</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Builds a {@link Specification} for filtering {@link TaskEntity} based on the provided criteria.
+&nbsp;     *
+&nbsp;     * @param status   the {@link Status} of the task (optional, can be null).
+&nbsp;     * @param priority the {@link Priority} of the task (optional, can be null).
+&nbsp;     * @param dueDate  the due date of the task (optional, can be null).
+&nbsp;     * @return a {@link Specification} that combines all non-null filters and also restricts results
+&nbsp;     *         to tasks belonging to the currently authenticated user.
+&nbsp;     *
+&nbsp;     */
+&nbsp;
+&nbsp;    public static Specification&lt;TaskEntity&gt; withFilters(Status status, Priority priority, LocalDateTime dueDate) {
+&nbsp;
+<b class="nc">&nbsp;        String email = SecurityContextHolder.getContext().getAuthentication().getName();</b>
+&nbsp;
+<b class="nc">&nbsp;        return safeWhere(statusEquals(status))</b>
+<b class="nc">&nbsp;                .and(priorityEquals(priority))</b>
+<b class="nc">&nbsp;                .and(dueDateEquals(dueDate))</b>
+<b class="nc">&nbsp;                .and(userEmailEquals(email));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Safely wraps a specification, returning a no-op specification if the input is null.
+&nbsp;     *
+&nbsp;     * @param spec the {@link Specification} to wrap.
+&nbsp;     * @param &lt;T&gt;  the entity type.
+&nbsp;     * @return the original specification if not null, otherwise a specification that always evaluates to true.
+&nbsp;     *
+&nbsp;     */
+&nbsp;
+&nbsp;    private static &lt;T&gt; Specification&lt;T&gt; safeWhere(Specification&lt;T&gt; spec) {
+<b class="nc">&nbsp;        return spec == null ? (root, query, cb) -&gt; cb.conjunction() : spec;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a specification to filter by task status.
+&nbsp;     *
+&nbsp;     * @param status the {@link Status} to filter by.
+&nbsp;     * @return a {@link Specification} for status equality, or null if status is null.
+&nbsp;     */
+&nbsp;
+&nbsp;    private static Specification&lt;TaskEntity&gt; statusEquals(Status status) {
+<b class="nc">&nbsp;        return (root, query, cb) -&gt;</b>
+<b class="nc">&nbsp;                status == null ? null : cb.equal(root.get(&quot;status&quot;), status);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a specification to filter by task priority.
+&nbsp;     *
+&nbsp;     * @param priority the {@link Priority} to filter by.
+&nbsp;     * @return a {@link Specification} for priority equality, or null if priority is null.
+&nbsp;     */
+&nbsp;    private static Specification&lt;TaskEntity&gt; priorityEquals(Priority priority) {
+<b class="nc">&nbsp;        return (root, query, cb) -&gt;</b>
+<b class="nc">&nbsp;                priority == null ? null : cb.equal(root.get(&quot;priority&quot;), priority);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a specification to filter by task due date.
+&nbsp;     *
+&nbsp;     * @param dueDate the due date to filter by.
+&nbsp;     * @return a {@link Specification} for due date equality, or null if dueDate is null.
+&nbsp;     */
+&nbsp;    private static Specification&lt;TaskEntity&gt; dueDateEquals(LocalDateTime dueDate) {
+<b class="nc">&nbsp;        return (root, query, cb) -&gt;</b>
+<b class="nc">&nbsp;                dueDate == null ? null : cb.equal(root.get(&quot;dueDate&quot;), dueDate);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a specification to filter tasks by the user&#39;s email.
+&nbsp;     *
+&nbsp;     * @param email the email of the currently authenticated user.
+&nbsp;     * @return a {@link Specification} for user email equality, or null if email is null.
+&nbsp;     */
+&nbsp;    private static Specification&lt;TaskEntity&gt; userEmailEquals(String email) {
+<b class="nc">&nbsp;        return (root, query, cb) -&gt;</b>
+<b class="nc">&nbsp;                email == null ? null : cb.equal(root.get(&quot;user&quot;).get(&quot;email&quot;), email);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-08-14 01:42</div>
+</div>
+</body>
+</html>
