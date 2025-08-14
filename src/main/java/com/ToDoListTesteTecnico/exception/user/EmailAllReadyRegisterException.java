@@ -1,4 +1,4 @@
-package com.ToDoListTesteTecnico.exception;
+package com.ToDoListTesteTecnico.exception.user;
 
 
 import com.ToDoListTesteTecnico.Enum.ExceptionDetails;

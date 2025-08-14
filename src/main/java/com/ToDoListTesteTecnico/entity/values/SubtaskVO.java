@@ -3,6 +3,7 @@ package com.ToDoListTesteTecnico.entity.values;
 import com.ToDoListTesteTecnico.Enum.Priority;
 import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ public class SubtaskVO {
     private LocalDateTime dueDate;
     private Status status;
     private Priority priority;
+    @JsonIgnore
     private UserEntity user;
 
     public SubtaskVO() {

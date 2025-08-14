@@ -1,7 +1,6 @@
 package com.ToDoListTesteTecnico.repository;
 
 import com.ToDoListTesteTecnico.entity.SubtaskEntity;
-import com.ToDoListTesteTecnico.entity.TaskEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

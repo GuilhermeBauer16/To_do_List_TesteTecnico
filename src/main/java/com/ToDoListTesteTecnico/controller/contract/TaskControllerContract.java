@@ -5,7 +5,6 @@ import com.ToDoListTesteTecnico.Enum.Status;
 import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
-import com.ToDoListTesteTecnico.response.TaskResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

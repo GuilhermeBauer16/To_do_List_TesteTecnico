@@ -1,10 +1,5 @@
 package com.ToDoListTesteTecnico.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-
 public class LoginRequest {
     private String email;
     private String password;

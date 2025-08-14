@@ -4,8 +4,6 @@ import com.ToDoListTesteTecnico.entity.SubtaskEntity;
 import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
 import com.ToDoListTesteTecnico.entity.values.TaskVO;
 import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
-import com.ToDoListTesteTecnico.response.SubtaskResponse;
-import com.ToDoListTesteTecnico.response.TaskResponse;
 
 public interface SubTaskServiceContract {
 

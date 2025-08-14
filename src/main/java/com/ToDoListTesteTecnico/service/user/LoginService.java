@@ -1,6 +1,6 @@
 package com.ToDoListTesteTecnico.service.user;
 
-import com.ToDoListTesteTecnico.exception.UserCredentialsNotMatchedException;
+import com.ToDoListTesteTecnico.exception.user.UserCredentialsNotMatchedException;
 import com.ToDoListTesteTecnico.request.LoginRequest;
 import com.ToDoListTesteTecnico.response.LoginResponse;
 import com.ToDoListTesteTecnico.service.contract.LoginServiceContract;

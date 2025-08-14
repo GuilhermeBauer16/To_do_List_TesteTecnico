@@ -1,8 +1,8 @@
 package com.ToDoListTesteTecnico.handler;
 
-import com.ToDoListTesteTecnico.exception.EmailAllReadyRegisterException;
+import com.ToDoListTesteTecnico.exception.user.EmailAllReadyRegisterException;
 import com.ToDoListTesteTecnico.exception.ExceptionResponse;
-import com.ToDoListTesteTecnico.exception.UserNotFoundException;
+import com.ToDoListTesteTecnico.exception.user.UserNotFoundException;
 import com.ToDoListTesteTecnico.exception.subtask.InvalidSubTaskException;
 import com.ToDoListTesteTecnico.exception.subtask.InvalidSubTaskStatusException;
 import com.ToDoListTesteTecnico.exception.subtask.SubTaskNotCompletedException;
