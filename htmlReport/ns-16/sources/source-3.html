@@ -1,0 +1,125 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > SubtaskControllerContract</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ToDoListTesteTecnico.controller.contract</a>
+</div>
+
+<h1>Coverage Summary for Class: SubtaskControllerContract (com.ToDoListTesteTecnico.controller.contract)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">SubtaskControllerContract</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ToDoListTesteTecnico.controller.contract;
+&nbsp;
+&nbsp;import com.ToDoListTesteTecnico.entity.values.SubtaskVO;
+&nbsp;import com.ToDoListTesteTecnico.request.UpdateStatusRequest;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;
+&nbsp;public interface SubtaskControllerContract {
+&nbsp;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Update subtask status&quot;,
+&nbsp;            description = &quot;Update subtask status and return the updated task&quot;,
+&nbsp;            tags = &quot;subtask&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;                    content = @Content(schema = @Schema(implementation = SubtaskVO.class))),
+&nbsp;
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Will throw Field Not Found Exception or Sub Task Not Found Exception &quot;,
+&nbsp;                    content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;,
+&nbsp;                    content = @Content)
+&nbsp;    })
+&nbsp;    ResponseEntity&lt;SubtaskVO&gt; updateSubTaskStatus(String id, UpdateStatusRequest updateStatusRequest);
+&nbsp;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;find subtask by Id&quot;,
+&nbsp;            description = &quot;Find subtask by id and returned the subtask&quot;,
+&nbsp;            tags = &quot;subtask&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Successful operation&quot;,
+&nbsp;                    content = @Content(schema = @Schema(implementation = SubtaskVO.class))),
+&nbsp;
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Will throw Field Not Found Exception or Sub Task Not Found Exception &quot;,
+&nbsp;                    content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;,
+&nbsp;                    content = @Content)
+&nbsp;    })
+&nbsp;    ResponseEntity&lt;SubtaskVO&gt; findSubTaskById(String id);
+&nbsp;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Delete subtask by Id&quot;,
+&nbsp;            description = &quot;Delete subtask by id and returned the subtask&quot;,
+&nbsp;            tags = &quot;subtask&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Successful operation&quot;),
+&nbsp;
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Will throw Sub Task Not Found Exception &quot;,
+&nbsp;                    content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;,
+&nbsp;                    content = @Content)
+&nbsp;    })
+&nbsp;    ResponseEntity&lt;Void&gt; deleteSubTask(String id);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-08-14 01:42</div>
+</div>
+</body>
+</html>

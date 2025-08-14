@@ -1,0 +1,98 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserRegistrationControllerContract</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.ToDoListTesteTecnico.controller.contract</a>
+</div>
+
+<h1>Coverage Summary for Class: UserRegistrationControllerContract (com.ToDoListTesteTecnico.controller.contract)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">UserRegistrationControllerContract</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.ToDoListTesteTecnico.controller.contract;
+&nbsp;
+&nbsp;import com.ToDoListTesteTecnico.entity.values.TaskVO;
+&nbsp;import com.ToDoListTesteTecnico.entity.values.UserVO;
+&nbsp;import com.ToDoListTesteTecnico.response.UserResponse;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;
+&nbsp;public interface UserRegistrationControllerContract {
+&nbsp;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Create user&quot;,
+&nbsp;            description = &quot;Create user and returned the created user&quot;,
+&nbsp;            tags = &quot;user&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Successful operation&quot;,
+&nbsp;                    content = @Content(schema = @Schema(implementation = UserResponse.class))),
+&nbsp;            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Will throw Email AllReady Register Exception&quot;,
+&nbsp;                    content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Will throw Field Not Found Exception or User Not Found Exception&quot;,
+&nbsp;                    content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;,
+&nbsp;                    content = @Content)
+&nbsp;    })
+&nbsp;    ResponseEntity&lt;UserResponse&gt; createUser(UserVO userVO);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-08-14 01:42</div>
+</div>
+</body>
+</html>
